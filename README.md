@@ -33,3 +33,5 @@ git fetch upstream
 
 E finalmente um pull no seu master local:
 git pull upstream master
+
+>>>>>>>

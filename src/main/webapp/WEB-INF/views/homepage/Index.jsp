@@ -25,10 +25,10 @@
 			    	</a>
 		   </c:if>
 		   <c:if test="${sessionScope.edital.status.codigo == 2}">
-			    <a class="homepage-link" href="${pageContext.request.contextPath}/edital/homologacao/inscricao">
+			    <a class="homepage-link" href="${pageContext.request.contextPath}/edital/homologacao/inscricao/${sessionScope.edital.id}">
 			    		<spring:message code="homepage.comandos.edital.inscricoes.homologar"/>
 			    	</a>
-			    <a class="homepage-link" href="${pageContext.request.contextPath}/edital/homologacao/dispensa">
+			    <a class="homepage-link" href="${pageContext.request.contextPath}/edital/homologacao/dispensa/${sessionScope.edital.id}">
 			    		<spring:message code="homepage.comandos.edital.dispensas.homologar"/>
 			    	</a>
 			    <a class="homepage-link" href="${pageContext.request.contextPath}/edital/homologacao/encerramento">

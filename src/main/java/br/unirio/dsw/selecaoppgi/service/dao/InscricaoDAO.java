@@ -1,19 +1,21 @@
 package br.unirio.dsw.selecaoppgi.service.dao;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
-import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
+import br.unirio.dsw.selecaoppgi.model.edital.Edital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.AvaliacaoProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoEdital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoProjetoPesquisa;
-import br.unirio.dsw.selecaoppgi.utils.DateUtils;
+import br.unirio.dsw.selecaoppgi.model.usuario.Usuario;
 
 /**
  * Classe responsavel pela persistencia de inscrições em edital de seleção
@@ -23,6 +25,36 @@ import br.unirio.dsw.selecaoppgi.utils.DateUtils;
 @Service("inscricaoDAO")
 public class InscricaoDAO extends AbstractDAO
 {
+	/**
+	 * Carrega os dados de uma inscricao a partir do resultado de uma consulta
+	 */
+	private InscricaoEdital carrega(ResultSet rs) throws SQLException
+	{
+		int idCandidato = rs.getInt("idCandidato");
+		UsuarioDAO userDAO = new UsuarioDAO();
+		Edital edital = new EditalDAO().carregaEditalId(rs.getInt("idEdital"), userDAO);
+		Usuario candidato = userDAO.carregaUsuarioId(idCandidato);
+
+		InscricaoEdital inscricao = new InscricaoEdital(edital);
+		inscricao.setId(rs.getInt("id"));
+		inscricao.setIdCandidato(idCandidato);
+		inscricao.setNomeCandidato(candidato.getNome());
+		inscricao.setCotaNegros(rs.getInt("cotaNegros") != 0);
+		inscricao.setCotaDeficientes(rs.getInt("cotaDeficientes") != 0);
+		inscricao.setHomologadoOriginal(rs.getInt("homologadoInicial") != 0);
+		inscricao.setJustificativaHomologacaoOriginal(rs.getString("justificativaHomologacaoInicial"));
+		inscricao.setHomologadoRecurso(rs.getInt("homologadoRecurso") != 0);
+		inscricao.setJustificativaHomologacaoRecurso(rs.getString("justificativaHomologacaoRecurso"));
+		inscricao.setDispensadoProvaOriginal(rs.getInt("dispensadoProvaInicial") != 0);
+		inscricao.setJustificativaDispensaOriginal(rs.getString("justificativaDispensaInicial"));
+		inscricao.setDispensadoProvaRecurso(rs.getInt("dispensadoProvaRecurso") != 0);
+		inscricao.setJustificativaDispensaRecurso(rs.getString("justificativaDispensaRecurso"));
+//		this.projetosPesquisa = new ArrayList<InscricaoProjetoPesquisa>();
+//		this.provasEscritas = new ArrayList<AvaliacaoProvaEscrita>();
+		
+		return inscricao;
+	}
+	
 	/**
 	 * Registra uma nova inscrição de um candidato, incluindo os projetos de pesquisa, provas e critérios de alinhamento
 	 */
@@ -51,7 +83,31 @@ public class InscricaoDAO extends AbstractDAO
 	public List<InscricaoEdital> carregaAvaliacaoHomologacao(int idEdital)
 	{
 		// TODO Grupo 4: implementar este método em função do caso de uso #6
-		return null;
+
+		Connection c = getConnection();
+		
+		if (c == null)
+			return null;
+		
+		try
+		{
+			List<InscricaoEdital> listItems = new ArrayList<InscricaoEdital>();
+			
+			PreparedStatement ps = c.prepareStatement("SELECT * FROM Inscricao WHERE idEdital = ?");
+			ps.setLong(1, idEdital);
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				listItems.add(carrega(rs));
+			
+			c.close();
+			return listItems;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.getAvaliacaoHomologacao: " + e.getMessage());
+			return null;
+		}
 	}
 	
 	/**
@@ -62,7 +118,25 @@ public class InscricaoDAO extends AbstractDAO
 		// Muda o campo homologadoInicial para TRUE e limpa o campo justificativaHomologacaoInicial
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// TODO Grupo 4: implementar este método em função do caso de uso #6
-		return false;
+		
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoAceitaHomolagacaoInicial(?)}");
+			cs.setInt(1, idInscricao);
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.homologacaoInicial: " + e.getMessage());
+			return false;
+		}
 	}
 	
 	/**
@@ -73,7 +147,26 @@ public class InscricaoDAO extends AbstractDAO
 		// Muda o campo homologadoInicial para FALSE e preenche o campo justificativaHomologacaoInicial
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// TODO Grupo 4: implementar este método em função do caso de uso #6
-		return false;
+		
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoRecusaHomolagacaoInicial(?, ?)}");
+			cs.setInt(1, idInscricao);
+			cs.setString(2, justificativa);
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.recusaHomologacaoInicial: " + e.getMessage());
+			return false;
+		}
 	}
 	
 	/**
@@ -85,7 +178,25 @@ public class InscricaoDAO extends AbstractDAO
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// Somente se o campo homologadoInicial estiver FALSE
 		// TODO Grupo 4: implementar este método em função do caso de uso #6
-		return false;
+		
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoAceitaHomolagacaoRecurso(?)}");
+			cs.setInt(1, idInscricao);
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.homologacaoRecurso: " + e.getMessage());
+			return false;
+		}
 	}
 	
 	/**
@@ -97,7 +208,26 @@ public class InscricaoDAO extends AbstractDAO
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// Somente se o campo homologadoInicial estiver FALSE
 		// TODO Grupo 4: implementar este método em função do caso de uso #6
-		return false;
+		
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoRecusaHomolagacaoRecurso(?, ?)}");
+			cs.setInt(1, idInscricao);
+			cs.setString(2, justificativa);
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.recusaHomologacaoRecurso: " + e.getMessage());
+			return false;
+		}
 	}
 	
 	/**
@@ -107,7 +237,30 @@ public class InscricaoDAO extends AbstractDAO
 	{
 		// As inscrições devem estar homologadas na avaliação inicial ou no recurso
 		// TODO Grupo 4: implementar este método em função do caso de uso #6
-		return null;
+		Connection c = getConnection();
+		
+		if (c == null)
+			return null;
+		
+		try
+		{
+			List<InscricaoEdital> listItems = new ArrayList<InscricaoEdital>();
+			
+			PreparedStatement ps = c.prepareStatement("SELECT * FROM Inscricao WHERE idEdital = ? AND (homologadoInicial != 0 OR homologadoRecurso != 0)");
+			ps.setLong(1, idEdital);
+			
+			ResultSet rs = ps.executeQuery();
+			while(rs.next())
+				listItems.add(carrega(rs));
+			
+			c.close();
+			return listItems;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.getAvaliacaoDispensa: " + e.getMessage());
+			return null;
+		}
 	}
 
 	/**
@@ -119,17 +272,6 @@ public class InscricaoDAO extends AbstractDAO
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// Somente se o campo homologadoInicial estiver TRUE ou o campo homologadoRecurso estiver TRUE
 		// TODO Grupo 4: implementar este método em função do caso de uso #7
-		return false;
-	}
-	
-	/**
-	 * Registra a recusa de dispensa de provas de uma inscrição na avaliação inicial
-	 */
-	public boolean recusaDispensaProvaInicial(int idInscricao, String justificativa)
-	{
-		String SQL = "SELECT nome " +
-				 "FROM inscricao " + 
-				 "WHERE id = ?";				 				
 		
 		Connection c = getConnection();
 		
@@ -138,26 +280,47 @@ public class InscricaoDAO extends AbstractDAO
 		
 		try
 		{
-			PreparedStatement ps = c.prepareStatement(SQL);
-			ps.setLong(1, idInscricao);			
-
-			ResultSet rs = ps.executeQuery();			
-
-			//InscricaoEdital inscricaoEdital = InscricaoEdital(rs);
-			
-			c.close();			
+			CallableStatement cs = c.prepareCall("{call InscricaoDispensaProvaInicial(?)}");
+			cs.setInt(1, idInscricao);			
+			cs.execute();
+			c.close();
+			return true;
 
 		} catch (SQLException e)
 		{
-			log("InscricaoDAO.recusaDispensaProvaInicial: " + e.getMessage());			
-		}
-		
-		
+			log("InscricaoDAO.DispensaProvaInicial: " + e.getMessage());
+			return false;
+		}				
+	}
+	
+	/**
+	 * Registra a recusa de dispensa de provas de uma inscrição na avaliação inicial
+	 */
+	public boolean recusaDispensaProvaInicial(int idInscricao, String justificativa)
+	{
 		// Muda o campo dispensadoProvaInicial para FALSE e preenche o campo justificativaDispensaInicial
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// Somente se o campo homologadoInicial estiver TRUE ou o campo homologadoRecurso estiver TRUE
 		// TODO Grupo 4: implementar este método em função do caso de uso #7
-		return false;
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoRecusaDispensaProvaInicial(?,?)}");
+			cs.setInt(1, idInscricao);		
+			cs.setString(2, justificativa);
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.RecusaDispensaProvaInicial: " + e.getMessage());
+			return false;
+		}				
 	}
 	
 	/**
@@ -170,7 +333,24 @@ public class InscricaoDAO extends AbstractDAO
 		// Somente se o campo homologadoInicial estiver TRUE ou o campo homologadoRecurso estiver TRUE
 		// Somente se o campo dispensadoProvaInicial estiver FALSE
 		// TODO Grupo 4: implementar este método em função do caso de uso #7
-		return false;
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoDispensaProvaRecurso(?)}");
+			cs.setInt(1, idInscricao);			
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.DispensaProvaRecurso: " + e.getMessage());
+			return false;
+		}	
 	}
 	
 	/**
@@ -183,7 +363,25 @@ public class InscricaoDAO extends AbstractDAO
 		// Somente se o campo homologadoInicial estiver TRUE ou o campo homologadoRecurso estiver TRUE
 		// Somente se o campo dispensadoProvaInicial estiver FALSE
 		// TODO Grupo 4: implementar este método em função do caso de uso #7
-		return false;
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			CallableStatement cs = c.prepareCall("{call InscricaoRecusaDispensaProvaRecurso(?,?)}");
+			cs.setInt(1, idInscricao);		
+			cs.setString(2, justificativa);
+			cs.execute();
+			c.close();
+			return true;
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.RecusaDispensaProvaRecurso: " + e.getMessage());
+			return false;
+		}	
 	}
 	
 	/**

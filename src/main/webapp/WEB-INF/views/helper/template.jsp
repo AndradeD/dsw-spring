@@ -149,10 +149,10 @@ var contextPath = "${pageContext.request.contextPath}";
 			    	</a>
 		   </c:if>
 		   <c:if test="${sessionScope.edital.status.codigo == 2}">
-			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/inscricao">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/inscricao/${sessionScope.edital.id}">
 			    		<spring:message code="homepage.comandos.edital.inscricoes.homologar"/>
 			    	</a>
-			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/dispensa">
+			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/dispensa/${sessionScope.edital.id}">
 			    		<spring:message code="homepage.comandos.edital.dispensas.homologar"/>
 			    	</a>
 			    <a class="sidebar-command" href="${pageContext.request.contextPath}/edital/homologacao/encerramento">

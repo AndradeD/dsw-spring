@@ -1,4 +1,4 @@
-App.controller("listaController", function ($scope, dataService, NgTableParams) {
+App.controller("homologacaoController", function ($scope, inscricaoDataService, NgTableParams) {
 	var self = this;
 	
 	/**
@@ -12,36 +12,14 @@ App.controller("listaController", function ($scope, dataService, NgTableParams) 
 	 * Altera os filtros de consulta
 	 */
 	self.atualizaFiltro = function () {
-		alert('aa');
 		atualizaLista();
 	}
 	
 	/*
-	 * Atualiza a lista de editais
+	 * Atualiza a lista de dispensas
 	 */
 	var atualizaLista = function() {
 		$scope.tableParams.reload();
-	}
-	
-	/*
-	 * Navega para a pagina de visualizacao de edital
-	 */
-	self.edita = function(id) {
-		window.location = contextPath + "/edital/edit/" + id;
-	}
-	
-	/*
-	 * Cria um novo edital
-	 */
-	self.novo = function() {
-		window.location = contextPath + "/edital/create";
-	}
-	
-	/*
-	 * Remove o edital selecionado
-	 */
-	self.remove = function(id) {
-		dataService.remove(id).then(atualizaLista);
 	}
 	
 	/*
@@ -49,7 +27,8 @@ App.controller("listaController", function ($scope, dataService, NgTableParams) 
 	 */
 	$scope.tableParams = new NgTableParams({}, {
 		getData: function (params) {
-			return dataService.lista({
+			return inscricaoDataService.lista({
+				id: idEdital,
 				page: params.page() - 1,
 				size: params.count(),
 				nome: $scope.filtros.nome

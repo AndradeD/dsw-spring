@@ -1,12 +1,19 @@
 package br.unirio.dsw.selecaoppgi.service.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Service;
 
+import br.unirio.dsw.selecaoppgi.model.edital.StatusEdital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.AvaliacaoProvaEscrita;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoEdital;
 import br.unirio.dsw.selecaoppgi.model.inscricao.InscricaoProjetoPesquisa;
+import br.unirio.dsw.selecaoppgi.utils.DateUtils;
 
 /**
  * Classe responsavel pela persistencia de inscrições em edital de seleção
@@ -120,6 +127,32 @@ public class InscricaoDAO extends AbstractDAO
 	 */
 	public boolean recusaDispensaProvaInicial(int idInscricao, String justificativa)
 	{
+		String SQL = "SELECT nome " +
+				 "FROM inscricao " + 
+				 "WHERE id = ?";				 				
+		
+		Connection c = getConnection();
+		
+		if (c == null)
+			return false;
+		
+		try
+		{
+			PreparedStatement ps = c.prepareStatement(SQL);
+			ps.setLong(1, idInscricao);			
+
+			ResultSet rs = ps.executeQuery();			
+
+			//InscricaoEdital inscricaoEdital = InscricaoEdital(rs);
+			
+			c.close();			
+
+		} catch (SQLException e)
+		{
+			log("InscricaoDAO.recusaDispensaProvaInicial: " + e.getMessage());			
+		}
+		
+		
 		// Muda o campo dispensadoProvaInicial para FALSE e preenche o campo justificativaDispensaInicial
 		// Muda a data de atualização do registro de inscrição para a data de hoje
 		// Somente se o campo homologadoInicial estiver TRUE ou o campo homologadoRecurso estiver TRUE

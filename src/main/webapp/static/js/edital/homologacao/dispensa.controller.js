@@ -1,4 +1,4 @@
-App.controller("homologacaoController", function ($scope, inscricaoDataService, NgTableParams) {
+App.controller("dispensaController", function ($scope, inscricaoDataService, NgTableParams) {
 	var self = this;
 	
 	/**
@@ -16,12 +16,35 @@ App.controller("homologacaoController", function ($scope, inscricaoDataService, 
 	}
 	
 	/*
-	 * Atualiza a lista de dispensas
+	 * Atualiza a lista de inscrições
 	 */
 	var atualizaLista = function() {
 		$scope.tableParams.reload();
 	}
+      
+	self.dispensarInicial = function(id,dispensa,justificativa) {
+		dispensarInicial(id,dispensa,justificativa);
+	}
+    
+    var dispensarInicial = function(id,dispensa,justificativa) {
+    	return inscricaoDataService.dispensarInicial({
+    		id:id,
+    		dispensa:dispensa,
+    		justificativa:justificativa
+    	});
+    }
+    
+    self.dispensarRecurso = function(id,dispensa,justificativa) {
+    	dispensarRecurso(id,dispensa,justificativa);
+	}
 	
+    var dispensarRecurso = function(id,dispensa,justificativa) {
+    	return inscricaoDataService.dispensarRecurso({
+    		id:id,
+    		dispensa:dispensa,
+    		justificativa:justificativa
+    	});
+    }
 	/*
 	 * Prepara a tabela
 	 */

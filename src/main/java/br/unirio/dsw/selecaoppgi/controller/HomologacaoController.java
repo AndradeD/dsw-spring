@@ -38,12 +38,26 @@ public class HomologacaoController
 //	/edital/homologacao/inscricao
 
 	/**
-	 * Ação que redireciona o usuário para a tela de homologação de inscrições de um edital
+	 * Ação que redireciona o usuário para a tela de homologação original de inscrições de um edital
 	 */
-    @RequestMapping(value = "/edital/homologacao/inscricao/{id}", method = RequestMethod.GET)
-    public ModelAndView mostraPaginaHomologacaoInscricao(@PathVariable("id") int idEdital)
+    @RequestMapping(value = "/edital/homologacao/original/inscricao/{id}", method = RequestMethod.GET)
+    public ModelAndView mostraPaginaHomologacaoOriginalInscricao(@PathVariable("id") int idEdital)
     {
-    	ModelAndView model = new ModelAndView("/edital/homologacao/inscricao");
+    	ModelAndView model = new ModelAndView("/edital/homologacao/inscricaoHomologadoOriginal");
+    	
+    	Edital edital = editalDAO.carregaEditalId(idEdital, userDAO);
+    	
+    	model.getModel().put("edital", edital);
+    	return model;
+    }
+    
+    /**
+	 * Ação que redireciona o usuário para a tela de homologação de recurso de inscrições de um edital
+	 */
+    @RequestMapping(value = "/edital/homologacao/recurso/inscricao/{id}", method = RequestMethod.GET)
+    public ModelAndView mostraPaginaHomologacaoRecursoInscricao(@PathVariable("id") int idEdital)
+    {
+    	ModelAndView model = new ModelAndView("/edital/homologacao/inscricaoHomologadoRecurso");
     	
     	Edital edital = editalDAO.carregaEditalId(idEdital, userDAO);
     	
@@ -101,12 +115,26 @@ public class HomologacaoController
 	
 //	/edital/homologacao/dispensa
 	/**
-	 * Ação que redireciona o usuário para a tela de homologação de dispensa de um edital
+	 * Ação que redireciona o usuário para a tela de dispensa de uma prova inicial
 	 */
     @RequestMapping(value = "/edital/homologacao/dispensa/{id}", method = RequestMethod.GET)
-    public ModelAndView mostraPaginaHomologacaoDispensa(@PathVariable("id") int idEdital)
+    public ModelAndView mostraPaginaHomologacaoDispensaInicial(@PathVariable("id") int idEdital)
     {
-    	ModelAndView model = new ModelAndView("/edital/homologacao/dispensa");
+    	ModelAndView model = new ModelAndView("/edital/homologacao/dispensaProvaInicial");
+    	
+    	Edital edital = editalDAO.carregaEditalId(idEdital, userDAO);
+    	
+    	model.getModel().put("edital", edital);
+    	return model;
+    }
+    
+	/**
+	 * Ação que redireciona o usuário para a tela de dispensa de uma prova de recurso 
+	 */
+    @RequestMapping(value = "/edital/homologacao/dispensa/{id}", method = RequestMethod.GET)
+    public ModelAndView mostraPaginaHomologacaoDispensaRecurso(@PathVariable("id") int idEdital)
+    {
+    	ModelAndView model = new ModelAndView("/edital/homologacao/dispensaProvaRecurso");
     	
     	Edital edital = editalDAO.carregaEditalId(idEdital, userDAO);
     	

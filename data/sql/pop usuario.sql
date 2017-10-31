@@ -1,0 +1,17 @@
+CALL UsuarioInsere("Adriana C.F. Alvim", "adriana@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Ana Cristina B. Garcia", "cristina.bicharra@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Astério Kyoshy Tanaka", "tanaka@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Carlos Alberto Campos", "beto@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Carlos Eduardo R. Mello", "mello@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Claudia Cappelli Alló", "claudia.cappelli@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Fernanda A. Baião", "fernanda.baiao@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Gleison Souza Santos", "gleison.santos@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Kate Cerqueira Revoredo", "katerevoredo@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Leonardo Guerreiro Azevedo", "azevedo@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Marcio de Oliveira Barros", "marcio.barros@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 3, @id);
+CALL UsuarioInsere("Mariano Gomes Pimentel", "pimentel@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Renata Mendes Araújo", "renata.araujo@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Rodrigo Pereira Santos", "rodrigo.pereira@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Sean W. Siqueira", "sean@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Sidney P. Lucena", "sidney@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);
+CALL UsuarioInsere("Simone B.L. Ferreira", "simone@uniriotec.br", "$2a$10$HflP3AJrzwM.he3.gW78a.FZvW6uVpfSiwWGmVVwTTQL78REd.6UO", 2, @id);

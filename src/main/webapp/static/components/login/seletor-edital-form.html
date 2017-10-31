@@ -1,0 +1,17 @@
+<dialog class="mdl-dialog">
+    <h4 class="mdl-dialog__title">{{ 'form_title' | translate }}</h4>
+    <div class="mdl-dialog__content">
+      	<p>
+        		{{ 'form_subtitle' | translate }}
+      	</p>
+      	<p>
+      		<select ng-model="editalSelecionado">
+      			<option ng-repeat="edital in editais" value="{{edital.id}}">{{edital.nome}}</option>
+			</select>
+      	</p>
+    	</div>
+    <div class="mdl-dialog__actions">
+      <button type="button" class="mdl-button">OK</button>
+      <button type="button" class="mdl-button close">Cancela</button>
+    </div>
+</dialog>

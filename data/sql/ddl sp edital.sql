@@ -1,0 +1,48 @@
+--
+-- ATUALIZA OS DADOS DE UM EDITAL
+--
+
+DROP PROCEDURE IF EXISTS EditalAtualiza;
+DELIMITER //
+CREATE PROCEDURE EditalAtualiza(vId INT, vNome VARCHAR(80), vStatus INT, vJSON LONGTEXT, OUT oId INT)
+BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION ROLLBACK;
+	START TRANSACTION;
+
+	IF vId <> -1 THEN
+		UPDATE Edital
+		SET nome = vNome,
+		status = vStatus,
+		json = vJson,
+		dataAtualizacao = NOW()
+		WHERE id = vId;
+		
+		SET oId = vId;
+	ELSE
+		INSERT INTO Edital (dataRegistro, dataAtualizacao, nome, status, json)
+		VALUES (NOW(), NOW(), vNome, vStatus, vJSON);
+		
+		SET oId = LAST_INSERT_ID();
+	END IF;
+	
+	COMMIT;
+END //
+DELIMITER ;
+
+--
+-- REMOVE OS DADOS DE UM EDITAL
+--
+
+DROP PROCEDURE IF EXISTS EditalRemove;
+DELIMITER //
+CREATE PROCEDURE EditalRemove(vId INT)
+BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION ROLLBACK;
+	START TRANSACTION;
+
+	DELETE FROM Edital
+	WHERE id = vId;
+	
+	COMMIT;
+END //
+DELIMITER ;
